@@ -114,6 +114,8 @@ def getCaptcha():
     print(uuid)
 
 def useSedative():
+    if sedative == 0:
+        return
     cookies = {'sessionid': SESSIONID, 'csrftoken': CSRFTOKEN}
     headers.update({'X-CSRFToken': CSRFTOKEN, 'Content-Length': '0', \
                     'TE': 'Trailers', 'Referer': 'https://dreamcatcher.poe.garena.tw/', \
