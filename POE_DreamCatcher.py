@@ -9,6 +9,8 @@ import json
 import requests
 import hashlib
 import base64
+import time
+import random
 from Crypto.Cipher import AES
 
 # Login URL
@@ -95,6 +97,19 @@ def Login():
     cookies = {'sessionid': SESSIONID}
     result = client.get(LOGINCHECK_URL + 'access_token=' + ACCESSTOKEN, cookies=cookies)
     updateData()
+    
+def getCaptcha():
+    uuid = ''
+    for index in range(0, 32):
+        rand = random.random() * 16 | 0
+        if index == 12:
+            continue
+        elif index == 16:
+            uuid += rand & 0x3 | 0x8
+        else:
+            uuid += rand
+    uuid = format(uuid, 'x')
+    print(uuid)
 
 def useSedative():
     cookies = {'sessionid': SESSIONID, 'csrftoken': CSRFTOKEN}
@@ -132,18 +147,28 @@ def updateData():
     if stable_points == 0:
         useSedative()
 
-# Strategy refer from : https://forum.gamer.com.tw/C.php?bsn=18966&snA=119097
+# Strategy reference : https://forum.gamer.com.tw/C.php?bsn=18966&snA=119097
 def catchDream():
     cookies = {'sessionid': SESSIONID, 'csrftoken': CSRFTOKEN}
     headers.update({'X-CSRFToken': CSRFTOKEN, 'Content-Length': '31', \
                     'TE': 'Trailers', 'Referer': 'https://dreamcatcher.poe.garena.tw/', \
                     'Host': 'dreamcatcher.poe.garena.tw', 'Cookie': 'csrftoken='+CSRFTOKEN+'; sessionid='+SESSIONID})
-    result = client.post(CATCHDREAM_URL, headers=headers, cookies=cookies, json={"guess_numbers":[1,0,0,0,0,0]})
+    guess_strategy = [3, 5, 8]
+    guess_list = [guess_strategy[current_floor-1]] * current_stage
+    guess_list.extend([0] * (6-current_stage))
+    result = client.post(CATCHDREAM_URL, headers=headers, cookies=cookies, json={"guess_numbers":guess_list})
     print('Guess--------------------------')
     print(result.json())
-    if result.json()['data']['numbers_abs'][0] != 0:
-        client.post(CATCHDREAM_URL, headers=headers, cookies=cookies, json={"guess_numbers":[result.json()['data']['numbers_abs'][0] + 1,0,0,0,0,0]})
-        print('Correct------------------------')
+    while result.json()['data']['success'] == False:
+        time.sleep(10)
+        number_abs = result.json()['data']['numbers_abs']
+        for index in range(0, current_stage):
+            if guess_list[index] - number_abs[index] < 1:
+                guess_list[index] += number_abs[index]
+            else:
+                guess_list[index] -= number_abs[index]
+        result = client.post(CATCHDREAM_URL, headers=headers, cookies=cookies, json={"guess_numbers":guess_list})
+        print('Guess--------------------------')
         print(result.json())
     updateData()
     
@@ -158,10 +183,9 @@ def recycle():
     
 # Main------------------------
 Login()
-if current_floor != 1 or current_stage != 1:
-    recycle()
+catchDream()
+"""
 while 1:
-    catchDream()
-    recycle()
     if stable_points == 0 and sedative == 0:
         break
+"""
