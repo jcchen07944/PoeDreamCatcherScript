@@ -177,6 +177,9 @@ def catchDream():
         result = client.post(CATCHDREAM_URL, headers=headers, cookies=cookies, json={"guess_numbers":guess_list})
         print('Guess--------------------------')
         print(result.json())
+        if result.json()['success'] == False:
+            print(result.json()['message'])
+            sys.exit()
         if result.json()['data']['stable_points'] == 0:
             if sedative > 0:
                 useSedative()
@@ -209,7 +212,7 @@ def recycle():
 Login()
 while stable_points > 0 or sedative > 0:
     catchDream()
-    if current_floor >= 2:
+    if current_floor >= 3:
         recycle()
 """
 while 1:
