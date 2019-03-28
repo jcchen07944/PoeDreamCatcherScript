@@ -181,11 +181,7 @@ def catchDream():
             print(result.json()['message'])
             sys.exit()
         if result.json()['data']['stable_points'] == 0:
-            if sedative > 0:
-                useSedative()
-            else:
-                recycle()
-                break
+            break
         if result.json()['data']['success'] == True:
             break
         time.sleep(10)
