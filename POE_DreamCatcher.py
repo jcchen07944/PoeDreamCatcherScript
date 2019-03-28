@@ -11,6 +11,7 @@ import hashlib
 import base64
 import time
 import random
+import sys
 from Crypto.Cipher import AES
 
 # Login URL
@@ -46,6 +47,7 @@ stable_points = 0
 sedative = 0
 current_floor = 0
 current_stage = 0
+min_path_count = 0
 
 
 def Login():
@@ -124,6 +126,7 @@ def updateData():
     global sedative
     global current_floor
     global current_stage
+    global min_path_count
     global CSRFTOKEN
     cookies = {'sessionid': SESSIONID}
     if CSRFTOKEN != '':
@@ -144,6 +147,9 @@ def updateData():
     first = result.text.find('var current_stage = ')
     last = result.text.find(';', first)
     current_stage = int(result.text[first + 20:last])
+    first = result.text.find('\'min_path_count\': ')
+    last = result.text.find(',', first)
+    min_path_count = int(result.text[first + 18:last])
     if stable_points == 0:
         useSedative()
 
@@ -154,12 +160,31 @@ def catchDream():
                     'TE': 'Trailers', 'Referer': 'https://dreamcatcher.poe.garena.tw/', \
                     'Host': 'dreamcatcher.poe.garena.tw', 'Cookie': 'csrftoken='+CSRFTOKEN+'; sessionid='+SESSIONID})
     guess_strategy = [3, 5, 8]
-    guess_list = [guess_strategy[current_floor-1]] * current_stage
-    guess_list.extend([0] * (6-current_stage))
-    result = client.post(CATCHDREAM_URL, headers=headers, cookies=cookies, json={"guess_numbers":guess_list})
-    print('Guess--------------------------')
-    print(result.json())
-    while result.json()['data']['success'] == False:
+    guess_list = [guess_strategy[current_floor-1]] * min_path_count
+    guess_list.extend([0] * (6-min_path_count))
+    print(guess_list)
+    while True:
+        # check if stable_points enough
+        cnt = 0
+        for i in range(0, min_path_count):
+            cnt += max(abs(current_floor * 10 - guess_list[i]), abs(guess_list[i] - current_floor * 10))
+        if cnt >= stable_points and sedative == 0:
+            print('Finish!')
+            recycle()
+            sys.exit()
+        
+        # guess
+        result = client.post(CATCHDREAM_URL, headers=headers, cookies=cookies, json={"guess_numbers":guess_list})
+        print('Guess--------------------------')
+        print(result.json())
+        if result.json()['data']['stable_points'] == 0:
+            if sedative > 0:
+                useSedative()
+            else:
+                recycle()
+                break
+        if result.json()['data']['success'] == True:
+            break
         time.sleep(10)
         number_abs = result.json()['data']['numbers_abs']
         for index in range(0, current_stage):
@@ -167,12 +192,11 @@ def catchDream():
                 guess_list[index] += number_abs[index]
             else:
                 guess_list[index] -= number_abs[index]
-        result = client.post(CATCHDREAM_URL, headers=headers, cookies=cookies, json={"guess_numbers":guess_list})
-        print('Guess--------------------------')
-        print(result.json())
     updateData()
     
 def recycle():
+    if current_floor == 1 and current_stage == 1:
+        return
     print('Recycle------------------------')
     cookies = {'sessionid': SESSIONID, 'csrftoken': CSRFTOKEN}
     headers.update({'X-CSRFToken': CSRFTOKEN, 'Content-Length': '0', \
@@ -183,7 +207,10 @@ def recycle():
     
 # Main------------------------
 Login()
-catchDream()
+while stable_points > 0 or sedative > 0:
+    catchDream()
+    if current_floor >= 2:
+        recycle()
 """
 while 1:
     if stable_points == 0 and sedative == 0:
