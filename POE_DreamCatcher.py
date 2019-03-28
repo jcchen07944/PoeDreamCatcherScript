@@ -131,9 +131,9 @@ def updateData():
     current_stage = int(result.text[first + 20:last])
     if stable_points == 0:
         useSedative()
-    
+
+# Strategy refer from : https://forum.gamer.com.tw/C.php?bsn=18966&snA=119097
 def catchDream():
-    # empty
     cookies = {'sessionid': SESSIONID, 'csrftoken': CSRFTOKEN}
     headers.update({'X-CSRFToken': CSRFTOKEN, 'Content-Length': '31', \
                     'TE': 'Trailers', 'Referer': 'https://dreamcatcher.poe.garena.tw/', \
