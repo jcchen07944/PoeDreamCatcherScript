@@ -169,9 +169,9 @@ def catchDream():
         for i in range(0, min_path_count):
             cnt += max(abs(current_floor * 10 - guess_list[i]), abs(guess_list[i] - current_floor * 10))
         if cnt >= stable_points and sedative == 0:
-            print('Finish!')
+            print('Stable points too less, restart!')
             recycle()
-            sys.exit()
+            break
         
         # guess
         result = client.post(CATCHDREAM_URL, headers=headers, cookies=cookies, json={"guess_numbers":guess_list})
