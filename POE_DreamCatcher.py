@@ -184,7 +184,10 @@ def catchDream():
             print(result.json()['message'])
             sys.exit()
         if result.json()['data']['stable_points'] == 0:
-            break
+            if sedative != 0:
+                useSedative()
+            else:
+                break
         if result.json()['data']['success'] == True:
             break
         time.sleep(10)
@@ -211,7 +214,7 @@ def recycle():
 Login()
 while stable_points > 0 or sedative > 0:
     catchDream()
-    if current_floor >= 3:
+    if current_floor > 1 or current_stage > 1:
         recycle()
 """
 while 1:
