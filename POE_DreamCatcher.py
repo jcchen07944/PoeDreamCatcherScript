@@ -164,8 +164,9 @@ def catchDream():
     guess_strategy = [3, 5, 8]
     guess_list = [guess_strategy[current_floor-1]] * min_path_count
     guess_list.extend([0] * (6-min_path_count))
-    print(guess_list)
     while True:
+        print(guess_list)
+        
         # check if stable_points enough
         cnt = 0
         for i in range(0, min_path_count):
