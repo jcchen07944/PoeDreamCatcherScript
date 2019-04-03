@@ -164,19 +164,19 @@ def catchDream():
     guess_strategy = [3, 5, 8]
     guess_list = [guess_strategy[current_floor-1]] * min_path_count
     guess_list.extend([0] * (6-min_path_count))
+    worst_case = 0
+    for i in range(0, min_path_count):
+        worst_case += max(abs(current_floor * 10 - guess_list[i]), abs(guess_list[i] - current_floor * 10))
     while True:
         print(guess_list)
         
         # check if stable_points enough
-        cnt = 0
-        for i in range(0, min_path_count):
-            cnt += max(abs(current_floor * 10 - guess_list[i]), abs(guess_list[i] - current_floor * 10))
-        if cnt >= stable_points and sedative == 0:
+        if worst_case >= stable_points and sedative == 0:
             if current_floor != 1 or current_stage != 1:
                 print('Stable points too less, restart!')
                 recycle()
                 break
-        
+
         # guess
         result = client.post(CATCHDREAM_URL, headers=headers, cookies=cookies, json={"guess_numbers":guess_list})
         print('Guess--------------------------')
@@ -191,13 +191,15 @@ def catchDream():
                 break
         if result.json()['data']['success'] == True:
             break
-        time.sleep(10)
+        time.sleep(1)
         number_abs = result.json()['data']['numbers_abs']
-        for index in range(0, current_stage):
+        worst_case = 0
+        for index in range(0, min_path_count):
             if guess_list[index] - number_abs[index] < 1:
                 guess_list[index] += number_abs[index]
             else:
                 guess_list[index] -= number_abs[index]
+                worst_case += (number_abs[index] * 2)
     updateData()
     
 def recycle():
@@ -215,10 +217,5 @@ def recycle():
 Login()
 while stable_points > 0 or sedative > 0:
     catchDream()
-    if current_floor > 1 or current_stage > 1:
+    if current_floor > 3 and current_stage > 1:
         recycle()
-"""
-while 1:
-    if stable_points == 0 and sedative == 0:
-        break
-"""
