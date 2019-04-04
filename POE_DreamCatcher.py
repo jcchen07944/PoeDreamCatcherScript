@@ -86,12 +86,11 @@ def Login():
     cookies = {'sso_key': SSO_KEY}
     payload = {'client_id': '200033', 'redirect_uri': 'https://dreamcatcher.poe.garena.tw/oauth/logincheck', \
                'response_type': 'token', 'all_platforms': '1', 'locale': 'zh-TW', 'platform': '1', \
-               'format': 'json', 'app_id': '200033', 'id': '1553715310429'}
-    grant_headers = headers
-    grant_headers.update({'Host': 'auth.garena.com'})
-    grant_headers.update({'Cookie': 'sso_key='+SSO_KEY})
-    grant_headers.update({'Content-Length': '194'})
-    grant_headers.update({'Referer': 'https://auth.garena.com/oauth/login?client_id=200033&redirect_uri=https%3A%2F%2Fdreamcatcher.poe.garena.tw%2Foauth%2Flogincheck&response_type=token&all_platforms=1&locale=zh-TW&platform=1'})
+               'format': 'json', 'app_id': '200033'}
+    headers.update({'Host': 'auth.garena.com'})
+    headers.update({'Cookie': 'sso_key='+SSO_KEY})
+    headers.update({'Content-Length': '194'})
+    headers.update({'Referer': 'https://auth.garena.com/oauth/login?client_id=200033&redirect_uri=https%3A%2F%2Fdreamcatcher.poe.garena.tw%2Foauth%2Flogincheck&response_type=token&all_platforms=1&locale=zh-TW&platform=1'})
     result = client.post(GRANT_URL, data=payload, headers=headers)
     content_json = json.loads(result.text)
     ACCESSTOKEN = content_json['access_token']
