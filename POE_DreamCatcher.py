@@ -116,6 +116,10 @@ def getCaptcha():
 def useSedative():
     if sedative == 0:
         return
+    print('#################')
+    print('# Use sedative! #')
+    print('#################')
+    print('')
     cookies = {'sessionid': SESSIONID, 'csrftoken': CSRFTOKEN}
     headers.update({'X-CSRFToken': CSRFTOKEN, 'Content-Length': '0', \
                     'TE': 'Trailers', 'Referer': 'https://dreamcatcher.poe.garena.tw/', \
@@ -184,8 +188,8 @@ def catchDream():
             if first_guess:
                 guess_list = [1] * min_path_count
 
-        print('Guess : ' + guess_list)
         # guess
+        print('Guess : ' + guess_list)
         result = client.post(CATCHDREAM_URL, headers=headers, cookies=cookies, json={"guess_numbers":guess_list})
         print('############')
         print('# Response #')
@@ -196,7 +200,7 @@ def catchDream():
             print('%#%#%#%#%#%#%#%#%#%')
             print('# Error detected! #')
             print('%#%#%#%#%#%#%#%#%#%')
-            print(result.json()['message'])
+            print('Error message : ' + result.json()['message'])
             print('')
             sys.exit()
         if result.json()['data']['stable_points'] == 0:
