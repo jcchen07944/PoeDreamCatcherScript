@@ -190,11 +190,7 @@ def catchDream():
         # guess
         print('Guess : ' + guess_list)
         result = client.post(CATCHDREAM_URL, headers=headers, cookies=cookies, json={"guess_numbers":guess_list})
-        print('############')
-        print('# Response #')
-        print('############')
-        print(result.json())
-        print('')
+        
         if result.json()['success'] == False:
             print('%#%#%#%#%#%#%#%#%#%')
             print('# Error detected! #')
@@ -202,6 +198,15 @@ def catchDream():
             print('Error message : ' + result.json()['message'])
             print('')
             sys.exit()
+            
+        print('##########')
+        print('# Result #')
+        print('##########')
+        print('Stable points : ' + result.json()['data']['stable_points'])
+        print('Numbers abs : ' + result.json()['data']['numbers_abs'])
+        print('Success : ' + result.json()['data']['success'])
+        print('')
+        
         if result.json()['data']['stable_points'] == 0:
             if sedative != 0:
                 useSedative()
