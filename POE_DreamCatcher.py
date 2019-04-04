@@ -168,21 +168,31 @@ def catchDream():
     for i in range(0, min_path_count):
         worst_case += max(abs(current_floor * 10 - guess_list[i]), abs(guess_list[i] - current_floor * 10))
     while True:
-        print(guess_list)
+        print('Guess : ' + guess_list)
         
         # check if stable_points enough
         if worst_case >= stable_points and sedative == 0:
             if current_floor != 1 or current_stage != 1:
-                print('Stable points too less, restart!')
+                print('************************************')
+                print('* Stable points too less, restart! *')
+                print('************************************')
+                print('')
                 recycle()
                 break
 
         # guess
         result = client.post(CATCHDREAM_URL, headers=headers, cookies=cookies, json={"guess_numbers":guess_list})
-        print('Guess--------------------------')
+        print('############')
+        print('# Response #')
+        print('############')
         print(result.json())
+        print('')
         if result.json()['success'] == False:
+            print('%#%#%#%#%#%#%#%#%#%')
+            print('# Error detected! #')
+            print('%#%#%#%#%#%#%#%#%#%')
             print(result.json()['message'])
+            print('')
             sys.exit()
         if result.json()['data']['stable_points'] == 0:
             if sedative != 0:
@@ -205,7 +215,10 @@ def catchDream():
 def recycle():
     if current_floor == 1 and current_stage == 1:
         return
-    print('Recycle------------------------')
+    print('###########')
+    print('# Recycle #')
+    print('###########')
+    print('')
     cookies = {'sessionid': SESSIONID, 'csrftoken': CSRFTOKEN}
     headers.update({'X-CSRFToken': CSRFTOKEN, 'Content-Length': '0', \
                     'TE': 'Trailers', 'Referer': 'https://dreamcatcher.poe.garena.tw/', \
