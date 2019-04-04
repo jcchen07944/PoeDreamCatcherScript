@@ -169,6 +169,7 @@ def catchDream():
         worst_case += max(abs(current_floor * 10 - guess_list[i]), abs(guess_list[i] - current_floor * 10))
     while True:
         print('Guess : ' + guess_list)
+        time.sleep(2)
         
         # check if stable_points enough
         if worst_case >= stable_points and sedative == 0:
@@ -201,7 +202,6 @@ def catchDream():
                 break
         if result.json()['data']['success'] == True:
             break
-        time.sleep(1)
         number_abs = result.json()['data']['numbers_abs']
         worst_case = 0
         for index in range(0, min_path_count):
