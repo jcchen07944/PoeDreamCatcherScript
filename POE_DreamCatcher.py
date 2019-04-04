@@ -164,11 +164,11 @@ def catchDream():
     guess_strategy = [3, 5, 8]
     guess_list = [guess_strategy[current_floor-1]] * min_path_count
     guess_list.extend([0] * (6-min_path_count))
+    first_guess = True
     worst_case = 0
     for i in range(0, min_path_count):
         worst_case += max(abs(current_floor * 10 - guess_list[i]), abs(guess_list[i] - current_floor * 10))
     while True:
-        print('Guess : ' + guess_list)
         time.sleep(2)
         
         # check if stable_points enough
@@ -180,7 +180,11 @@ def catchDream():
                 print('')
                 recycle()
                 break
+        if worst_case >= stable_points and sedative > 0:
+            if first_guess:
+                guess_list = [1] * min_path_count
 
+        print('Guess : ' + guess_list)
         # guess
         result = client.post(CATCHDREAM_URL, headers=headers, cookies=cookies, json={"guess_numbers":guess_list})
         print('############')
@@ -202,6 +206,7 @@ def catchDream():
                 break
         if result.json()['data']['success'] == True:
             break
+        first_guess = False
         number_abs = result.json()['data']['numbers_abs']
         worst_case = 0
         for index in range(0, min_path_count):
