@@ -186,9 +186,10 @@ def catchDream():
         if worst_case >= stable_points and sedative > 0:
             if first_guess:
                 guess_list = [1] * min_path_count
+                guess_list.extend([0] * (6-min_path_count))
 
         # guess
-        print('Guess : ' + guess_list)
+        print('Guess : ' + str(guess_list))
         result = client.post(CATCHDREAM_URL, headers=headers, cookies=cookies, json={"guess_numbers":guess_list})
         
         if result.json()['success'] == False:
@@ -202,9 +203,9 @@ def catchDream():
         print('##########')
         print('# Result #')
         print('##########')
-        print('Stable points : ' + result.json()['data']['stable_points'])
-        print('Numbers abs : ' + result.json()['data']['numbers_abs'])
-        print('Success : ' + result.json()['data']['success'])
+        print('Stable points : ' + str(result.json()['data']['stable_points']))
+        print('Numbers abs : ' + str(result.json()['data']['numbers_abs']))
+        print('Success : ' + str(result.json()['data']['success']))
         print('')
         
         if result.json()['data']['stable_points'] == 0:
