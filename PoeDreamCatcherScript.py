@@ -164,7 +164,7 @@ def catchDream():
     headers.update({'X-CSRFToken': CSRFTOKEN, 'Content-Length': '31', \
                     'TE': 'Trailers', 'Referer': 'https://dreamcatcher.poe.garena.tw/', \
                     'Host': 'dreamcatcher.poe.garena.tw', 'Cookie': 'csrftoken='+CSRFTOKEN+'; sessionid='+SESSIONID})
-    guess_strategy = [3, 5, 8]
+    guess_strategy = [3, 5, 8, 1]
     guess_list = [guess_strategy[current_floor-1]] * min_path_count
     guess_list.extend([0] * (6-min_path_count))
     first_guess = True
@@ -244,5 +244,5 @@ def recycle():
 Login()
 while stable_points > 0 or sedative > 0:
     catchDream()
-    if current_floor > 3 and current_stage > 1:
+    if current_floor > 1 or current_stage > 1:
         recycle()
