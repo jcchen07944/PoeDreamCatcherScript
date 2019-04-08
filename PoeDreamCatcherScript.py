@@ -12,6 +12,7 @@ import base64
 import time
 import random
 import sys
+import getpass
 from Crypto.Cipher import AES
 
 # Login URL
@@ -28,7 +29,7 @@ RECYCLE_URL = 'https://dreamcatcher.poe.garena.tw/api/recycle'
 USESEDATIVE_URL = 'https://dreamcatcher.poe.garena.tw/api/use_sedative'
 
 USERNAME = input("UserName: ")
-PASSWORD = input("Password: ")
+PASSWORD = getpass.getpass("Password: ")
 
 SESSIONID = ''
 CSRFTOKEN = ''
