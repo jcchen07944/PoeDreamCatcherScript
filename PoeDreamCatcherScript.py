@@ -189,6 +189,11 @@ def catchDream():
                 guess_list = [1] * min_path_count
                 guess_list.extend([0] * (6-min_path_count))
 
+
+        print('##########')
+        print('# Result #')
+        print('##########')
+              
         # guess
         print('Guess : ' + str(guess_list))
         result = client.post(CATCHDREAM_URL, headers=headers, cookies=cookies, json={"guess_numbers":guess_list})
@@ -201,9 +206,6 @@ def catchDream():
             print('')
             sys.exit()
             
-        print('##########')
-        print('# Result #')
-        print('##########')
         print('Stable points : ' + str(result.json()['data']['stable_points']))
         print('Numbers abs : ' + str(result.json()['data']['numbers_abs']))
         print('Success : ' + str(result.json()['data']['success']))
