@@ -31,6 +31,12 @@ USESEDATIVE_URL = 'https://dreamcatcher.poe.garena.tw/api/use_sedative'
 USERNAME = input("UserName: ")
 PASSWORD = getpass.getpass("Password: ")
 
+try:
+    TARGET_FLOOR = int(input("Target floor: "))
+    TARGET_STAGE = int(input("Target stage: "))
+except ValueError:
+    print('Please input numbers.')
+
 SESSIONID = ''
 CSRFTOKEN = ''
 SSO_KEY = ''
@@ -247,5 +253,5 @@ def recycle():
 Login()
 while stable_points > 0 or sedative > 0:
     catchDream()
-    if current_floor > 1 or current_stage > 1:
+    if (current_floor*10+current_stage) >= (TARGET_FLOOR*10+TARGET_STAGE):
         recycle()
