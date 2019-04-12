@@ -36,6 +36,7 @@ try:
     TARGET_STAGE = int(input("Target stage: "))
 except ValueError:
     print('Please input numbers.')
+    sys.exit()
 
 SESSIONID = ''
 CSRFTOKEN = ''
