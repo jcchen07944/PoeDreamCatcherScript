@@ -5,7 +5,7 @@ An easy way to play [GGC Dream Catcher](https://dreamcatcher.poe.garena.tw/) :)
 
 ## Environment
 Python 3，also need to install pycrypto for login.  
-(Recommend to install Python3 by Anoconda, it contains all things.)
+(Recommend to install Python 3 by Anoconda, it contains all things.)
 
 ## How to use
 1. python PoeDreamCatcherScript.py
